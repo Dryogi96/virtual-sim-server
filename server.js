@@ -5,7 +5,7 @@ const cors = require("cors")
 const path = require("path")
 const { Server } = require("socket.io")
 
-const connectDB = require("./config/database")
+//const connectDB = require("./config/database")
 const chatSocket = require("./sockets/chatSocket")
 
 const authRoutes = require("./routes/auth")
