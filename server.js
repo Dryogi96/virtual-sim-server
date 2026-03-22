@@ -1,64 +1,54 @@
 const express = require("express")
 const http = require("http")
-const mongoose = require("mongoose")
 const cors = require("cors")
 const path = require("path")
 const { Server } = require("socket.io")
-
-//const connectDB = require("./config/database")
-//const chatSocket = require("./sockets/chatSocket")
-
-const authRoutes = require("./routes/auth")
-const groupRoutes = require("./routes/groups")
-const mediaRoutes = require("./routes/media")
 
 const app = express()
 
 /* -----------------------------
    Middleware
 ------------------------------*/
-
 app.use(cors())
 app.use(express.json())
 
 /* -----------------------------
-   Database
+   Database (FIXED PATH)
 ------------------------------*/
-
+const connectDB = require("../server/config/database")
 connectDB()
 
 /* -----------------------------
-   Static media folder
+   Static uploads
 ------------------------------*/
-
-app.use("/uploads", express.static(path.join(__dirname, "uploads")))
+app.use("/uploads", express.static(path.join(__dirname, "../server/uploads")))
 
 /* -----------------------------
-   Routes
+   Routes (FIXED PATH)
 ------------------------------*/
+const authRoutes = require("../server/routes/auth")
+const groupRoutes = require("../server/routes/groups")
+const mediaRoutes = require("../server/routes/media")
 
 app.use("/auth", authRoutes)
 app.use("/groups", groupRoutes)
 app.use("/media", mediaRoutes)
 
 /* -----------------------------
-   Root Test Route
+   Root
 ------------------------------*/
-
 app.get("/", (req, res) => {
     res.send("Virtual SIM Server Running 🚀")
 })
 
 /* -----------------------------
-   HTTP Server
+   Server
 ------------------------------*/
-
 const server = http.createServer(app)
 
 /* -----------------------------
-   Socket.IO Server
+   Socket.IO
 ------------------------------*/
-
 const io = new Server(server, {
     cors: {
         origin: "*",
@@ -67,15 +57,14 @@ const io = new Server(server, {
 })
 
 /* -----------------------------
-   Chat Socket Logic
+   Chat Socket (FIXED PATH)
 ------------------------------*/
-
+const chatSocket = require("../server/sockets/chatSocket")
 chatSocket(io)
 
 /* -----------------------------
-   Start Server
+   Start
 ------------------------------*/
-
 const PORT = process.env.PORT || 3000
 
 server.listen(PORT, () => {
